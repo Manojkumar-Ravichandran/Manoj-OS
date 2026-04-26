@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-success: var(--success);
+  --color-success-light: var(--success-light);
+  --color-danger: var(--danger);
+  --color-danger-light: var(--danger-light);
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
+  
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  
+  --color-body: var(--bg-body);
+  --color-surface: var(--bg-surface);
+  
+  --color-border: var(--border);
+}
+
+@layer base {
+  :root {
+    --bg-body: #f8f9fa;
+    --bg-surface: #ffffff;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    
+    --primary: #2563eb;
+    --primary-light: #eff6ff;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+  }
+
+  .dark {
+    --bg-body: #121212;
+    --bg-surface: #1e1e1e;
+    --text-main: #e0e0e0;
+    --text-muted: #888888;
+    --border: #2d2d2d;
+    
+    --primary: #4184f3;
+    --primary-light: rgba(65, 132, 243, 0.15);
+    --success: #4caf50;
+    --success-light: rgba(76, 175, 80, 0.15);
+    --danger: #e53935;
+    --danger-light: rgba(229, 57, 53, 0.15);
+    --warning: #ff9800;
+    --warning-light: rgba(255, 152, 0, 0.15);
+  }
+
+  body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+  }
+}
+
+/* Custom Scrollbar for better UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
