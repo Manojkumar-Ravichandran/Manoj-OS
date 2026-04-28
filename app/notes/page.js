@@ -1,93 +1,151 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Search, Plus, List, Grid } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Badge from "@/components/ui/Badge";
+import NoteModal from "@/components/notes/NoteModal";
+import { fetchNotes } from "@/lib/redux/slices/noteSlice";
 
-const tags = [
-  { name: "Personal", count: 8 },
-  { name: "Finance", count: 6 },
-  { name: "Ideas", count: 4 },
-  { name: "Work", count: 5 },
-  { name: "Health", count: 3 },
-  { name: "Important", count: 2 },
-];
-
-const notes = [
-  { title: "Buy health insurance", tag: "Personal", date: "24 May 2025", desc: "Compare different plans and choose the best one for family." },
-  { title: "Investment Checklist", tag: "Finance", date: "23 May 2025", desc: "Review before investing in any new stock or mutual fund." },
-  { title: "Project Ideas", tag: "Ideas", date: "22 May 2025", desc: "1. Personal OS\n2. AI Tools\n3. Finance Tracker" },
-  { title: "Monthly Budget Plan", tag: "Finance", date: "20 May 2025", desc: "Plan monthly budget and track all expenses." },
-  { title: "Workout Routine", tag: "Health", date: "19 May 2025", desc: "Morning: Cardio\nEvening: Strength training" },
-  { title: "Book List", tag: "Personal", date: "18 May 2025", desc: "1. Atomic Habits\n2. Rich Dad Poor Dad" },
-];
+const tagsList = ["Personal", "Finance", "Ideas", "Work", "Health", "Important"];
 
 export default function NotesPage() {
+  const dispatch = useDispatch();
+  const { notes, status } = useSelector((state) => state.note);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTag, setActiveTag] = useState("All");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchNotes());
+  }, [dispatch]);
+
+  const handleNoteClick = (note) => {
+    setEditData(note);
+    setIsModalOpen(true);
+  };
+
+  const handleAddNote = () => {
+    setEditData(null);
+    setIsModalOpen(true);
+  };
+
+  const filteredNotes = (notes || []).filter((note) => {
+    const matchesSearch = note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         note.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTag = activeTag === "All" || note.tag === activeTag;
+    return matchesSearch && matchesTag;
+  });
+
+  const tagCounts = (notes || []).reduce((acc, note) => {
+    acc[note.tag] = (acc[note.tag] || 0) + 1;
+    return acc;
+  }, {});
+
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full h-full">
+    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full h-full pb-12">
       {/* Header */}
-      <div>
+      <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold tracking-tight">Notes</h1>
+        <Button onClick={handleAddNote} className="gap-2 h-9">
+          <Plus className="w-4 h-4" /> New Note
+        </Button>
       </div>
 
-      <div className="flex gap-6 items-start">
+      <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Sidebar */}
-        <div className="w-64 shrink-0 flex flex-col gap-6">
+        <div className="w-full md:w-64 shrink-0 flex flex-col gap-6">
            <div>
-             <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Tags</div>
+             <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 px-3">Tags</div>
              <div className="space-y-1">
-               {tags.map((tag, i) => (
-                 <div key={i} className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-sm">
-                   <div className="flex items-center gap-2">
-                     <div className={`w-2 h-2 rounded-full bg-blue-500`}></div>
-                     <span className="text-text-main font-medium">{tag.name}</span>
-                   </div>
-                   <span className="text-text-muted text-xs">{tag.count}</span>
-                 </div>
-               ))}
+                <div 
+                  onClick={() => setActiveTag("All")}
+                  className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-sm transition-colors ${activeTag === "All" ? 'bg-primary/10 text-primary' : 'hover:bg-muted text-text-muted'}`}
+                >
+                  <span className="font-medium">All Notes</span>
+                  <span className="text-xs">{(notes || []).length}</span>
+                </div>
+                {tagsList.map((tag) => (
+                  <div 
+                    key={tag} 
+                    onClick={() => setActiveTag(tag)}
+                    className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-sm transition-colors ${activeTag === tag ? 'bg-primary/10 text-primary' : 'hover:bg-muted text-text-muted'}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${tag === activeTag ? 'bg-primary' : 'bg-text-muted/30'}`}></div>
+                      <span className="font-medium">{tag}</span>
+                    </div>
+                    <span className="text-xs">{tagCounts[tag] || 0}</span>
+                  </div>
+                ))}
              </div>
            </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col gap-6">
-           <div className="flex items-center justify-between">
+           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                 <h2 className="font-bold text-lg">All Notes</h2>
+                 <h2 className="font-bold text-lg">{activeTag} Notes</h2>
               </div>
-              <div className="flex items-center gap-3">
-                 <div className="relative w-64">
-                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                   <Input placeholder="Search notes..." className="pl-9 h-9" />
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                 <div className="relative flex-1 sm:w-64">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                    <Input 
+                      placeholder="Search notes..." 
+                      className="pl-9 h-9" 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                  </div>
                  <div className="flex items-center border border-border rounded-md bg-surface p-0.5">
-                    <button className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded shadow-sm text-text-main"><Grid className="w-4 h-4" /></button>
+                    <button className="p-1.5 bg-muted rounded shadow-sm text-text-main"><Grid className="w-4 h-4" /></button>
                     <button className="p-1.5 text-text-muted hover:text-text-main"><List className="w-4 h-4" /></button>
                  </div>
-                 <Button className="gap-2 ml-2 h-9">
-                   <Plus className="w-4 h-4" /> New Note
-                 </Button>
               </div>
            </div>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-             {notes.map((note, i) => (
-               <Card key={i} className="p-5 flex flex-col hover:border-primary/50 transition-colors cursor-pointer group">
-                  <h3 className="font-semibold text-lg text-text-main mb-2 group-hover:text-primary transition-colors">{note.title}</h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <Badge variant="primary" className="bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">{note.tag}</Badge>
-                    <span className="text-xs text-text-muted">{note.date}</span>
-                  </div>
-                  <p className="text-sm text-text-muted whitespace-pre-line leading-relaxed">
-                    {note.desc}
-                  </p>
-               </Card>
-             ))}
-           </div>
+           {status === 'loading' ? (
+             <div className="p-12 text-center text-text-muted">Loading notes...</div>
+           ) : filteredNotes.length === 0 ? (
+             <Card className="p-12 text-center border-dashed">
+                <div className="text-text-muted">No notes found.</div>
+                <Button variant="outline" className="mt-4" onClick={handleAddNote}>Create your first note</Button>
+             </Card>
+           ) : (
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+               {filteredNotes.map((note) => (
+                 <Card 
+                    key={note._id} 
+                    onClick={() => handleNoteClick(note)}
+                    className="p-5 flex flex-col hover:border-primary/50 transition-all hover:shadow-md cursor-pointer group animate-in fade-in slide-in-from-bottom-2 duration-300"
+                  >
+                    <h3 className="font-semibold text-lg text-text-main mb-2 group-hover:text-primary transition-colors line-clamp-1">{note.title}</h3>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Badge variant="primary" className="bg-primary/10 text-primary border-none">{note.tag}</Badge>
+                      <span className="text-[10px] text-text-muted uppercase font-semibold">
+                        {new Date(note.updatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                      </span>
+                    </div>
+                    <p className="text-sm text-text-muted whitespace-pre-line leading-relaxed line-clamp-4">
+                      {note.content}
+                    </p>
+                 </Card>
+               ))}
+             </div>
+           )}
         </div>
       </div>
+
+      <NoteModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        editData={editData}
+      />
     </div>
   );
 }
