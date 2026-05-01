@@ -29,11 +29,6 @@ export default function CrmPage() {
 
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">CRM</h1>
-      </div>
-
       {/* Tabs */}
       <div className="flex items-center gap-6 border-b border-border">
         {['Contacts', 'Companies', 'Deals', 'Activities'].map((tab, i) => (

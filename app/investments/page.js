@@ -8,6 +8,7 @@ import Table from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
 import HoldingModal from "@/components/investments/HoldingModal";
 import VRZStocksTab from "@/components/investments/VRZStocksTab";
+import WatchlistTab from "@/components/investments/WatchlistTab";
 import { fetchHoldings, deleteHolding } from "@/lib/redux/slices/holdingSlice";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -82,12 +83,12 @@ export default function InvestmentsPage() {
     (holdings || []).forEach(h => {
       const invested = h.quantity * h.avgPrice;
       totalInvested += invested;
-      
+
       const quote = quotes[h.symbol.toUpperCase()] || quotes[h.symbol.toUpperCase() + ".NS"];
       if (quote && quote.ltp) {
         const current = h.quantity * quote.ltp;
         currentValue += current;
-        
+
         if (quote.change) {
           todayGain += h.quantity * quote.change;
         }
@@ -203,22 +204,12 @@ export default function InvestmentsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full pb-12">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Investments</h1>
-        {activeTab === 'Holdings' && (
-          <Button onClick={handleAdd} className="gap-2">
-            <Plus className="w-4 h-4" /> Add Holding
-          </Button>
-        )}
-      </div>
-
+    <div className="flex flex-col gap-4 max-w-[1400px] mx-auto w-full pb-12">
       {/* Tabs */}
       <div className="flex items-center gap-6 border-b border-border">
-        {['Portfolio', 'Holdings', 'Watchlist', 'Orders','VRZ Stocks','CIS Stocks'].map((tab) => (
-          <div 
-            key={tab} 
+        {['Portfolio', 'Holdings', 'Watchlist', 'Orders', 'VRZ Stocks', 'CIS Stocks'].map((tab) => (
+          <div
+            key={tab}
             onClick={() => setActiveTab(tab)}
             className={`pb-3 font-medium text-sm cursor-pointer transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-main'}`}
           >
@@ -228,7 +219,7 @@ export default function InvestmentsPage() {
       </div>
 
       {activeTab === 'Portfolio' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in duration-300">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 animate-in fade-in duration-300">
           <Card className="p-6">
             <div className="grid grid-cols-2 gap-4 divide-x divide-border">
               {renderMarketIndex("NIFTY 50", marketData?.nifty)}
@@ -236,37 +227,37 @@ export default function InvestmentsPage() {
                 {renderMarketIndex("SENSEX", marketData?.sensex)}
               </div>
             </div>
-            
+
             <div className="grid grid-cols-4 gap-4 mt-8 pt-6 border-t border-border">
-               <div>
-                  <div className="text-xs text-text-muted mb-1">Current Value</div>
-                  <div className="font-bold text-lg">₹ {portfolioStats.currentValue.toLocaleString('en-IN')}</div>
-               </div>
-               <div>
-                  <div className="text-xs text-text-muted mb-1">Total Invested</div>
-                  <div className="font-bold text-lg">₹ {portfolioStats.totalInvested.toLocaleString('en-IN')}</div>
-               </div>
-               <div>
-                  <div className="text-xs text-text-muted mb-1">Overall Gain</div>
-                  <div className={`font-bold text-lg ${portfolioStats.overallGain >= 0 ? 'text-success' : 'text-danger'}`}>
-                    ₹ {Math.abs(portfolioStats.overallGain).toLocaleString('en-IN')} 
-                    <span className="text-xs font-normal ml-1">({portfolioStats.overallGainPct.toFixed(2)}%)</span>
-                  </div>
-               </div>
-               <div>
-                  <div className="text-xs text-text-muted mb-1">Today's Gain</div>
-                  <div className={`font-bold text-lg ${portfolioStats.todayGain >= 0 ? 'text-success' : 'text-danger'}`}>
-                    ₹ {Math.abs(portfolioStats.todayGain).toLocaleString('en-IN')} 
-                    <span className="text-xs font-normal ml-1">({portfolioStats.todayGainPct.toFixed(2)}%)</span>
-                  </div>
-               </div>
+              <div>
+                <div className="text-xs text-text-muted mb-1">Current Value</div>
+                <div className="font-bold text-lg">₹ {portfolioStats.currentValue.toLocaleString('en-IN')}</div>
+              </div>
+              <div>
+                <div className="text-xs text-text-muted mb-1">Total Invested</div>
+                <div className="font-bold text-lg">₹ {portfolioStats.totalInvested.toLocaleString('en-IN')}</div>
+              </div>
+              <div>
+                <div className="text-xs text-text-muted mb-1">Overall Gain</div>
+                <div className={`font-bold text-lg ${portfolioStats.overallGain >= 0 ? 'text-success' : 'text-danger'}`}>
+                  ₹ {Math.abs(portfolioStats.overallGain).toLocaleString('en-IN')}
+                  <span className="text-xs font-normal ml-1">({portfolioStats.overallGainPct.toFixed(2)}%)</span>
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-text-muted mb-1">Today's Gain</div>
+                <div className={`font-bold text-lg ${portfolioStats.todayGain >= 0 ? 'text-success' : 'text-danger'}`}>
+                  ₹ {Math.abs(portfolioStats.todayGain).toLocaleString('en-IN')}
+                  <span className="text-xs font-normal ml-1">({portfolioStats.todayGainPct.toFixed(2)}%)</span>
+                </div>
+              </div>
             </div>
           </Card>
 
           <Card className="p-6">
             <div className="flex justify-between items-center mb-4">
-               <h3 className="font-bold text-lg">Portfolio Performance</h3>
-               <select className="text-sm border-border border rounded px-2 py-1 bg-surface outline-none">
+              <h3 className="font-bold text-lg">Portfolio Performance</h3>
+              <select className="text-sm border-border border rounded px-2 py-1 bg-surface outline-none">
                 <option>Last 30 Days</option>
               </select>
             </div>
@@ -276,19 +267,19 @@ export default function InvestmentsPage() {
                   <AreaChart data={performanceData} margin={{ top: 10, right: 0, left: -10, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} dy={10} />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 10, fill: '#6b7280' }} 
-                      tickFormatter={(val) => `₹${(val/100000).toFixed(1)}L`} 
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 10, fill: '#6b7280' }}
+                      tickFormatter={(val) => `₹${(val / 100000).toFixed(1)}L`}
                     />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Portfolio Value']}
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                     />
@@ -309,7 +300,7 @@ export default function InvestmentsPage() {
         <Card className="flex flex-col animate-in slide-in-from-bottom-2 duration-300">
           <div className="p-4 border-b border-border flex items-center justify-between">
             <h3 className="font-bold text-lg">
-              {activeTab === 'Holdings' ? 'Your Holdings' : 'Recent Holdings'} 
+              {activeTab === 'Holdings' ? 'Your Holdings' : 'Recent Holdings'}
               <span className="text-text-muted text-sm font-normal ml-2">({holdings.length})</span>
             </h3>
             {isLoadingQuotes && <span className="text-xs text-text-muted animate-pulse">Updating prices...</span>}
@@ -317,7 +308,7 @@ export default function InvestmentsPage() {
           {status === 'loading' ? (
             <div className="p-12 text-center text-text-muted">Loading holdings...</div>
           ) : (
-            <Table 
+            <Table
               columns={['Stock', 'Qty.', 'Avg. Price', 'Current Price', 'Invested', 'Current Value', 'Gain/Loss', 'Actions']}
               data={tableData}
             />
@@ -326,16 +317,17 @@ export default function InvestmentsPage() {
       )}
 
       {activeTab === 'VRZ Stocks' && <VRZStocksTab />}
+      {activeTab === 'Watchlist' && <WatchlistTab />}
 
-      <HoldingModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <HoldingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         editData={editData}
       />
 
-      <HoldingModal 
-        isOpen={isViewModalOpen} 
-        onClose={() => setIsViewModalOpen(false)} 
+      <HoldingModal
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
         editData={viewData}
         isViewOnly={true}
       />

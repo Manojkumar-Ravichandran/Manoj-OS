@@ -14,12 +14,6 @@ const alerts = [
 export default function AlertsPage() {
   return (
     <div className="flex flex-col gap-6 max-w-[1000px] mx-auto w-full">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Alerts</h1>
-        <a href="#" className="text-sm text-primary hover:underline font-medium">View all</a>
-      </div>
-
       <div className="space-y-4">
         {alerts.map((alert) => {
           const Icon = alert.icon;

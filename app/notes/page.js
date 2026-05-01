@@ -48,15 +48,7 @@ export default function NotesPage() {
 
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full h-full pb-12">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Notes</h1>
-        <Button onClick={handleAddNote} className="gap-2 h-9">
-          <Plus className="w-4 h-4" /> New Note
-        </Button>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6 items-start">
+      <div className="flex flex-col md:flex-row gap-6 items-start mt-2">
         {/* Sidebar */}
         <div className="w-full md:w-64 shrink-0 flex flex-col gap-6">
            <div>

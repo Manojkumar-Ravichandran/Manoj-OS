@@ -30,11 +30,6 @@ const taskGroups = [
 export default function TasksPage() {
   return (
     <div className="flex flex-col gap-6 max-w-[1000px] mx-auto w-full">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
-      </div>
-
       {/* Tabs */}
       <div className="flex items-center gap-6 border-b border-border">
         {['My Tasks', 'All Tasks', 'Completed'].map((tab, i) => (

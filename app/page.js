@@ -74,18 +74,6 @@ function StatCard({ title, amount, change, isPositive, subtitle }) {
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full">
-      {/* Header */}
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-text-muted text-sm mt-1">Overview of your finances and activities</p>
-        </div>
-        <Button variant="outline" className="gap-2">
-          <CalendarDays className="w-4 h-4" />
-          26 Apr - 26 May 2025
-        </Button>
-      </div>
-
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Total Income" amount="₹ 1,24,350" change="12.5%" isPositive={true} />
