@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Plus, Trash2, TrendingUp, TrendingDown, RefreshCw, ChevronRight } from "lucide-react";
+import { Search, Plus, Trash2, TrendingUp, TrendingDown, RefreshCw, ChevronRight, Bell } from "lucide-react";
 import Card from "@/components/ui/Card";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+
+import PriceAlertModal from "./PriceAlertModal";
 
 export default function WatchlistTab() {
   const [watchlist, setWatchlist] = useState([]);
@@ -12,6 +14,7 @@ export default function WatchlistTab() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 
   useEffect(() => {
     fetchWatchlist();
@@ -182,14 +185,22 @@ export default function WatchlistTab() {
                   </div>
                   <p className="text-[10px] font-semibold text-text-muted mt-0.5">{selectedStock.name || "National Stock Exchange of India"}</p>
                 </div>
-                <div className="text-left md:text-right">
+                <div className="flex flex-col items-end gap-2">
                   <div className="text-xl font-black text-text-main">₹{selectedStock.quote?.ltp?.toLocaleString('en-IN', { minimumFractionDigits: 2 }) || "---"}</div>
-                  {selectedStock.quote?.change !== undefined && (
-                    <div className={`flex items-center md:justify-end gap-1 text-[10px] font-bold ${selectedStock.quote.change >= 0 ? 'text-success' : 'text-danger'}`}>
-                      <span>{selectedStock.quote.change >= 0 ? '+' : ''}{selectedStock.quote.change.toLocaleString('en-IN')}</span>
-                      <span>({selectedStock.quote.changePercent?.toFixed(2)}%)</span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-3">
+                    {selectedStock.quote?.change !== undefined && (
+                      <div className={`flex items-center gap-1 text-[10px] font-bold ${selectedStock.quote.change >= 0 ? 'text-success' : 'text-danger'}`}>
+                        <span>{selectedStock.quote.change >= 0 ? '+' : ''}{selectedStock.quote.change.toLocaleString('en-IN')}</span>
+                        <span>({selectedStock.quote.changePercent?.toFixed(2)}%)</span>
+                      </div>
+                    )}
+                    <button 
+                      onClick={() => setIsAlertModalOpen(true)}
+                      className="flex items-center gap-1.5 px-2 py-1 bg-primary text-white text-[10px] font-bold rounded hover:bg-primary-dark transition-all shadow-sm shadow-primary/20"
+                    >
+                      <Bell className="w-3 h-3" /> Set Alert
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -276,6 +287,14 @@ export default function WatchlistTab() {
           </div>
         )}
       </Card>
+      {selectedStock && (
+        <PriceAlertModal 
+          isOpen={isAlertModalOpen}
+          onClose={() => setIsAlertModalOpen(false)}
+          symbol={selectedStock.symbol}
+          currentPrice={selectedStock.quote?.ltp}
+        />
+      )}
     </div>
   );
 }

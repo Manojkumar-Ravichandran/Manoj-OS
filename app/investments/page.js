@@ -303,7 +303,12 @@ export default function InvestmentsPage() {
               {activeTab === 'Holdings' ? 'Your Holdings' : 'Recent Holdings'}
               <span className="text-text-muted text-sm font-normal ml-2">({holdings.length})</span>
             </h3>
-            {isLoadingQuotes && <span className="text-xs text-text-muted animate-pulse">Updating prices...</span>}
+            <div className="flex items-center gap-4">
+              {isLoadingQuotes && <span className="text-xs text-text-muted animate-pulse">Updating prices...</span>}
+              <Button onClick={handleAdd} className="gap-2 h-9">
+                <Plus className="w-4 h-4" /> Add Holding
+              </Button>
+            </div>
           </div>
           {status === 'loading' ? (
             <div className="p-12 text-center text-text-muted">Loading holdings...</div>
