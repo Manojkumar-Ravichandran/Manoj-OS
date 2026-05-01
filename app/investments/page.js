@@ -7,6 +7,7 @@ import Card from "@/components/ui/Card";
 import Table from "@/components/ui/Table";
 import Button from "@/components/ui/Button";
 import HoldingModal from "@/components/investments/HoldingModal";
+import VRZStocksTab from "@/components/investments/VRZStocksTab";
 import { fetchHoldings, deleteHolding } from "@/lib/redux/slices/holdingSlice";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -104,7 +105,7 @@ export default function InvestmentsPage() {
 
       {/* Tabs */}
       <div className="flex items-center gap-6 border-b border-border">
-        {['Portfolio', 'Holdings', 'Watchlist', 'Orders'].map((tab) => (
+        {['Portfolio', 'Holdings', 'Watchlist', 'Orders','VRZ Stocks','CIS Stocks'].map((tab) => (
           <div 
             key={tab} 
             onClick={() => setActiveTab(tab)}
@@ -203,6 +204,8 @@ export default function InvestmentsPage() {
           )}
         </Card>
       )}
+
+      {activeTab === 'VRZ Stocks' && <VRZStocksTab />}
 
       <HoldingModal 
         isOpen={isModalOpen} 
