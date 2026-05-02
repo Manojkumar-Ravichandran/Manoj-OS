@@ -146,7 +146,7 @@ export default function HoldingModal({ isOpen, onClose, editData = null, isViewO
           <div className="flex flex-col gap-2 text-left mt-2">
             <label className="text-sm font-medium text-text-muted">P/E & Price History</label>
             <div className="h-[250px] w-full border border-border rounded-lg p-4 bg-muted/10">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                   <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} />
