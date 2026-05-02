@@ -92,7 +92,7 @@ export default function DashboardPage() {
             </select>
           </div>
           <div className="h-[200px] md:h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <LineChart data={cashFlowData} margin={{ top: 5, right: 10, bottom: 5, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} dy={10} />
@@ -141,7 +141,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex flex-col items-center flex-1">
             <div className="h-[200px] w-full relative mb-4">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <PieChart>
                   <Pie
                     data={expenseData}

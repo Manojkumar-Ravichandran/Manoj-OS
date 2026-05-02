@@ -3,7 +3,7 @@ import dbConnect from "@/lib/mongodb";
 import Instrument from "@/lib/models/Instrument";
 import Zone from "@/lib/models/Zone";
 import SystemState from "@/lib/models/SystemState";
-import { evaluateProximity } from "@/lib/services/vrz";
+import Signal from "@/lib/models/Signal";
 import { fetchQuote } from "@/lib/services/yahoo";
 import { runOnce } from "@/lib/services/scheduler";
 import vrzConfig from "@/lib/vrzConfig";
@@ -50,63 +50,43 @@ export async function GET() {
   try {
     await dbConnect();
 
-    const [instruments, zones, state, vix, indexQuote] = await Promise.all([
-      Instrument.find({}),
-      Zone.find({ isActive: true }),
+    const [signals, state, vix, indexQuote] = await Promise.all([
+      Signal.find({ isActive: true }).sort({ timestamp: -1 }),
       SystemState.findOne({ key: "vrz" }),
       fetchVix(),
       fetchIndex()
     ]);
+    
+    // Market hours check (9 AM - 4 PM IST, Monday - Friday)
+    const istTime = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    const istHours = istTime.getHours();
+    const istDay = istTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const isMarketHours = istHours >= 9 && istHours < 16 && istDay >= 1 && istDay <= 5;
+    
+    const lastUpdate = state?.lastUpdated || state?.lastRunAt || 0;
+    const oneHourAgo = Date.now() - 3600000;
+    
+    const needsRefresh = signals.length === 0 || (isMarketHours && new Date(lastUpdate).getTime() < oneHourAgo);
 
-    const zoneMap = new Map();
-    for (const zone of zones) {
-      if (!zoneMap.has(zone.symbol)) {
-        zoneMap.set(zone.symbol, []);
-      }
-      zoneMap.get(zone.symbol).push(zone);
+    if (needsRefresh) {
+      const isInitial = signals.length === 0 && !state;
+      console.log(`[vrz] Triggering ${isInitial ? "initial" : "hourly market"} refresh...`);
+      runOnce().catch(err => console.error("[vrz] Auto-refresh failed:", err));
     }
 
-    const results = [];
-    let vrzHigh = 0;
-    let vrzLow = 0;
-
-    for (const instrument of instruments) {
-      const ltp = instrument.ltp;
-      const symbolZones = zoneMap.get(instrument.symbol) || [];
-
-      let best = null;
-      for (const zone of symbolZones) {
-        const proximity = evaluateProximity(ltp, zone, vrzConfig.nearPct);
-        if (!proximity) continue;
-        const candidate = {
-          symbol: instrument.symbol,
-          ltp,
-          nearZone: zone.type,
-          zonePrice: proximity.zonePrice,
-          distancePercent: proximity.distancePercent
-        };
-        if (!best || candidate.distancePercent < best.distancePercent) {
-          best = candidate;
-        }
-      }
-
-      if (best) {
-        if (best.nearZone === "VRZ_HIGH") vrzHigh += 1;
-        if (best.nearZone === "VRZ_LOW") vrzLow += 1;
-        results.push({
-          ...best,
-          ltp: round(best.ltp, 4),
-          zonePrice: round(best.zonePrice, 4),
-          distancePercent: round(best.distancePercent, 4)
-        });
-      }
-    }
+    const reclaimed = signals.filter(s => s.type.startsWith("RECLAIMED"));
+    const context = signals.filter(s => !s.type.startsWith("RECLAIMED"));
 
     return NextResponse.json({
       totalInstruments: NIFTY50_SYMBOLS.length,
-      vrzHigh,
-      vrzLow,
-      stocks: results,
+      signals: {
+        reclaimed,
+        context
+      },
+      counts: {
+        reclaimed: reclaimed.length,
+        context: context.length
+      },
       index: {
         symbol: "NIFTY 50",
         ltp: round(indexQuote?.ltp, 4),
