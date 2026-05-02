@@ -213,7 +213,7 @@ export default function VRZStocksTab() {
               <span className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-lg">
                 <Flame className="w-5 h-5 text-primary" />
               </span>
-              🔥 RECLAIMED (Top Priority)
+              RECLAIMED (Top Priority)
             </h2>
             <span className="text-xs font-bold bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">
               {filteredReclaimed.length} Opportunities
