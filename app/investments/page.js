@@ -125,21 +125,9 @@ export default function InvestmentsPage() {
     setIsModalOpen(true);
   };
 
-  // Group holdings by symbol for display
-  const groupedHoldings = (holdings || []).reduce((acc, h) => {
+  const tableData = (holdings || []).map(h => {
     const symbol = h.symbol.trim().toUpperCase();
-    if (!acc[symbol]) {
-      acc[symbol] = { ...h };
-    } else {
-      acc[symbol].quantity += h.quantity;
-      // Weighted average calculation could go here if needed, 
-      // but assuming API handles it
-    }
-    return acc;
-  }, {});
-
-  const tableData = Object.values(groupedHoldings).map(h => {
-    const quote = quotes[h.symbol.toUpperCase()] || quotes[h.symbol.toUpperCase() + ".NS"];
+    const quote = quotes[symbol] || quotes[symbol + ".NS"];
     const ltp = quote?.ltp;
     const invested = h.quantity * h.avgPrice;
     const currentVal = ltp ? h.quantity * ltp : invested;

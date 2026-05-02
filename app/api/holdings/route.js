@@ -22,8 +22,10 @@ export async function POST(request) {
     const qty = Number(quantity);
     const price = Number(avgPrice);
 
-    // Check if stock already exists in holdings
-    let holding = await Holding.findOne({ symbol: cleanSymbol });
+    // Check if stock already exists in holdings (case-insensitive)
+    let holding = await Holding.findOne({ 
+      symbol: { $regex: new RegExp(`^${cleanSymbol}$`, "i") } 
+    });
 
     if (holding) {
       // Update existing holding: Weighted Average Price Calculation
