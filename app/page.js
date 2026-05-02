@@ -57,15 +57,15 @@ const topInvestments = [
 
 function StatCard({ title, amount, change, isPositive, subtitle }) {
   return (
-    <Card className="p-5 flex flex-col gap-2">
-      <div className="text-sm font-medium text-text-muted">{title}</div>
+    <Card className="p-4 md:p-5 flex flex-col gap-2">
+      <div className="text-[10px] md:text-sm font-medium text-text-muted uppercase tracking-wider">{title}</div>
       <div className="flex items-end gap-2 mt-1">
-        <h3 className="text-2xl font-bold text-text-main">{amount}</h3>
-        {subtitle && <span className="text-sm text-text-muted mb-1">{subtitle}</span>}
+        <h3 className="text-xl md:text-2xl font-bold text-text-main whitespace-nowrap">{amount}</h3>
+        {subtitle && <span className="text-xs text-text-muted mb-1">{subtitle}</span>}
       </div>
-      <div className={`flex items-center text-xs font-medium ${isPositive ? 'text-success' : 'text-danger'}`}>
-        {isPositive ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
-        {change} <span className="text-text-muted ml-1 font-normal">vs last month</span>
+      <div className={`flex items-center text-[10px] md:text-xs font-medium ${isPositive ? 'text-success' : 'text-danger'}`}>
+        {isPositive ? <ArrowUpRight className="w-3.5 h-3.5 mr-1" /> : <ArrowDownRight className="w-3.5 h-3.5 mr-1" />}
+        {change} <span className="text-text-muted ml-1 font-normal">vs last mo</span>
       </div>
     </Card>
   );
@@ -73,30 +73,30 @@ function StatCard({ title, amount, change, isPositive, subtitle }) {
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full">
+    <div className="flex flex-col gap-4 md:gap-6 max-w-[1400px] mx-auto w-full">
       {/* Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Income" amount="₹ 1,24,350" change="12.5%" isPositive={true} />
-        <StatCard title="Total Expenses" amount="₹ 68,240" change="8.3%" isPositive={false} />
-        <StatCard title="Net Savings" amount="₹ 56,110" change="16.7%" isPositive={true} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <StatCard title="Income" amount="₹ 1,24,350" change="12.5%" isPositive={true} />
+        <StatCard title="Expenses" amount="₹ 68,240" change="8.3%" isPositive={false} />
+        <StatCard title="Savings" amount="₹ 56,110" change="16.7%" isPositive={true} />
         <StatCard title="Investments" amount="₹ 4,85,700" subtitle="(Current)" change="15.4%" isPositive={true} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Cash Flow */}
-        <Card className="col-span-2 p-6">
+        <Card className="lg:col-span-2 p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-lg">Cash Flow Overview</h3>
-            <select className="text-sm border-border border rounded px-2 py-1 bg-surface outline-none">
+            <h3 className="font-bold text-base md:text-lg">Cash Flow Overview</h3>
+            <select className="text-xs md:text-sm border-border border rounded px-2 py-1 bg-surface outline-none">
               <option>This Month</option>
             </select>
           </div>
-          <div className="h-[250px] w-full">
+          <div className="h-[200px] md:h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={cashFlowData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+              <LineChart data={cashFlowData} margin={{ top: 5, right: 10, bottom: 5, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dx={-10} tickFormatter={(val) => `₹${val/1000}k`} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} tickFormatter={(val) => `₹${val/1000}k`} />
                 <Tooltip />
                 <Line type="monotone" dataKey="income" stroke="#22c55e" strokeWidth={3} dot={{ r: 4, fill: '#22c55e', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
                 <Line type="monotone" dataKey="expenses" stroke="#ef4444" strokeWidth={3} dot={{ r: 4, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />

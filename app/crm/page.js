@@ -28,46 +28,48 @@ export default function CrmPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full">
+    <div className="flex flex-col gap-4 md:gap-6 max-w-[1400px] mx-auto w-full">
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-border">
+      <div className="flex items-center gap-6 border-b border-border overflow-x-auto no-scrollbar scroll-smooth px-1">
         {['Contacts', 'Companies', 'Deals', 'Activities'].map((tab, i) => (
           <div 
             key={tab} 
-            className={`pb-3 font-medium text-sm cursor-pointer ${i === 0 ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-main'}`}
+            className={`pb-3 font-medium text-sm cursor-pointer whitespace-nowrap transition-colors ${i === 0 ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-main'}`}
           >
             {tab}
           </div>
         ))}
       </div>
 
-      <Card className="flex flex-col">
+      <Card className="flex flex-col overflow-hidden">
         {/* Actions Bar */}
-        <div className="p-4 border-b border-border flex items-center justify-between">
-          <div className="relative w-80">
+        <div className="p-4 border-b border-border flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div className="relative w-full md:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-            <Input placeholder="Search contacts..." className="pl-10 bg-gray-50 dark:bg-gray-800/50" />
+            <Input placeholder="Search contacts..." className="pl-10 bg-gray-50 dark:bg-gray-800/50 w-full" />
           </div>
-          <div className="flex gap-3">
-            <Button variant="outline" className="gap-2">
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-2 flex-1 md:flex-none justify-center">
               <Filter className="w-4 h-4" /> Filters
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2 flex-1 md:flex-none justify-center">
               <Plus className="w-4 h-4" /> Add Contact
             </Button>
           </div>
         </div>
 
         {/* Table */}
-        <Table 
-          columns={['Name', 'Company', 'Email', 'Phone', 'Last Contact', 'Tags']}
-          data={tableData}
-        />
+        <div className="overflow-hidden">
+          <Table 
+            columns={['Name', 'Company', 'Email', 'Phone', 'Last Contact', 'Tags']}
+            data={tableData}
+          />
+        </div>
 
         {/* Pagination Footer */}
-        <div className="p-4 border-t border-border flex items-center justify-between text-sm text-text-muted">
-          <div>Showing 1 to 7 of 12 contacts</div>
-          <div className="flex gap-1">
+        <div className="p-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-muted">
+          <div className="order-2 sm:order-1">Showing 1 to 7 of 12 contacts</div>
+          <div className="flex gap-1 order-1 sm:order-2">
             <Button variant="outline" size="sm" className="w-8 px-0 text-text-muted">&lt;</Button>
             <Button variant="primary" size="sm" className="w-8 px-0">1</Button>
             <Button variant="outline" size="sm" className="w-8 px-0">2</Button>

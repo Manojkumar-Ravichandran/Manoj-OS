@@ -76,70 +76,72 @@ export default function FinancePage() {
 
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full">
+    <div className="flex flex-col gap-4 md:gap-6 max-w-[1400px] mx-auto w-full">
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-border">
+      <div className="flex items-center gap-6 border-b border-border overflow-x-auto no-scrollbar scroll-smooth px-1">
         {['Transactions', 'Budget', 'Categories', 'Accounts'].map((tab, i) => (
           <div 
             key={tab} 
-            className={`pb-3 font-medium text-sm cursor-pointer ${i === 0 ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-main'}`}
+            className={`pb-3 font-medium text-sm cursor-pointer whitespace-nowrap transition-colors ${i === 0 ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-main'}`}
           >
             {tab}
           </div>
         ))}
       </div>
 
-      <Card className="flex flex-col">
+      <Card className="flex flex-col overflow-hidden">
         {/* Actions Bar */}
-        <div className="p-4 border-b border-border flex items-center justify-between">
-          <div className="flex gap-3">
-            <Button variant="outline" className="gap-2">
+        <div className="p-4 border-b border-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-2 flex-1 sm:flex-none justify-center">
               <Filter className="w-4 h-4" /> Filters
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2 flex-1 sm:flex-none justify-center">
               <Download className="w-4 h-4" /> Export
             </Button>
           </div>
-          <Button className="gap-2" onClick={handleAdd}>
+          <Button className="gap-2 justify-center" onClick={handleAdd}>
             <Plus className="w-4 h-4" /> Add Transaction
           </Button>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-4 divide-x divide-border border-b border-border">
-          <div className="p-6">
-            <div className="text-sm font-medium text-text-muted mb-2">Total Income</div>
-            <div className="text-2xl font-bold text-success">₹ {totalIncome.toLocaleString('en-IN')}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border border-b border-border">
+          <div className="p-4 md:p-6">
+            <div className="text-xs md:text-sm font-medium text-text-muted mb-1 md:mb-2">Total Income</div>
+            <div className="text-xl md:text-2xl font-bold text-success">₹ {totalIncome.toLocaleString('en-IN')}</div>
           </div>
-          <div className="p-6">
-            <div className="text-sm font-medium text-text-muted mb-2">Total Expenses</div>
-            <div className="text-2xl font-bold text-danger">₹ {totalExpenses.toLocaleString('en-IN')}</div>
+          <div className="p-4 md:p-6">
+            <div className="text-xs md:text-sm font-medium text-text-muted mb-1 md:mb-2">Total Expenses</div>
+            <div className="text-xl md:text-2xl font-bold text-danger">₹ {totalExpenses.toLocaleString('en-IN')}</div>
           </div>
-          <div className="p-6">
-            <div className="text-sm font-medium text-text-muted mb-2">Net Savings</div>
-            <div className="text-2xl font-bold text-primary">₹ {netSavings.toLocaleString('en-IN')}</div>
+          <div className="p-4 md:p-6 border-t sm:border-t-0">
+            <div className="text-xs md:text-sm font-medium text-text-muted mb-1 md:mb-2">Net Savings</div>
+            <div className="text-xl md:text-2xl font-bold text-primary">₹ {netSavings.toLocaleString('en-IN')}</div>
           </div>
-          <div className="p-6 flex items-start justify-end">
-             <select className="text-sm border-border border rounded px-3 py-1.5 bg-surface outline-none">
+          <div className="p-4 md:p-6 flex items-center lg:justify-end border-t lg:border-t-0">
+             <select className="text-sm border-border border rounded px-3 py-1.5 bg-surface outline-none w-full sm:w-auto">
               <option>This Month</option>
             </select>
           </div>
         </div>
 
         {/* Table */}
-        {status === 'loading' ? (
-          <div className="p-12 text-center text-text-muted">Loading transactions...</div>
-        ) : (
-          <Table 
-            columns={['Date', 'Type', 'Category', 'Description', 'Amount', 'Account', 'Actions']}
-            data={tableData}
-          />
-        )}
+        <div className="overflow-hidden">
+          {status === 'loading' ? (
+            <div className="p-12 text-center text-text-muted">Loading transactions...</div>
+          ) : (
+            <Table 
+              columns={['Date', 'Type', 'Category', 'Description', 'Amount', 'Account', 'Actions']}
+              data={tableData}
+            />
+          )}
+        </div>
 
         {/* Pagination Footer */}
-        <div className="p-4 border-t border-border flex items-center justify-between text-sm text-text-muted">
-          <div>Showing {transactions.length} transactions</div>
-          <div className="flex gap-1">
+        <div className="p-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-muted">
+          <div className="order-2 sm:order-1">Showing {transactions.length} transactions</div>
+          <div className="flex gap-1 order-1 sm:order-2">
             <Button variant="outline" size="sm" className="w-8 px-0 text-text-muted">&lt;</Button>
             <Button variant="primary" size="sm" className="w-8 px-0">1</Button>
             <Button variant="outline" size="sm" className="w-8 px-0 text-text-muted">&gt;</Button>

@@ -42,7 +42,7 @@ const settingsNav = [
   { name: "Profile", path: "/profile", icon: User },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -60,7 +60,7 @@ export default function Sidebar() {
           const Icon = item.icon;
 
           return (
-            <Link key={item.path} href={item.path}>
+            <Link key={item.path} href={item.path} onClick={onClose}>
               <div
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                   active
@@ -79,8 +79,16 @@ export default function Sidebar() {
   );
 
   return (
-    <div className="w-64 bg-surface border-r border-border shrink-0 overflow-y-auto flex flex-col justify-between h-full">
+    <div className="w-64 h-full bg-surface border-r border-border flex flex-col justify-between overflow-y-auto">
       <div className="py-6">
+        <div className="flex items-center justify-between px-6 mb-8 lg:hidden">
+           <span className="font-semibold text-lg tracking-tight">Manoj OS</span>
+           <button onClick={onClose} className="p-2 text-text-muted">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+           </button>
+        </div>
         <NavGroup items={mainNav} />
         <NavGroup title="Tools" items={toolsNav} />
         <NavGroup title="Settings" items={settingsNav} />

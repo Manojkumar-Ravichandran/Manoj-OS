@@ -47,31 +47,30 @@ export default function NotesPage() {
   }, {});
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full h-full pb-12">
-      <div className="flex flex-col md:flex-row gap-6 items-start mt-2">
-        {/* Sidebar */}
-        <div className="w-full md:w-64 shrink-0 flex flex-col gap-6">
-          <div>
-            <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 px-3">Tags</div>
-            <div className="space-y-1">
+    <div className="flex flex-col gap-4 md:gap-6 max-w-[1400px] mx-auto w-full h-full pb-12">
+      <div className="flex flex-col xl:flex-row gap-6 items-start mt-2">
+        {/* Sidebar / Tags */}
+        <div className="w-full xl:w-64 shrink-0 flex flex-col gap-6">
+          <div className="xl:block">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-4 px-3">Categories</div>
+            <div className="flex xl:flex-col gap-1 overflow-x-auto no-scrollbar xl:overflow-visible pb-2 xl:pb-0 px-2 xl:px-0">
               <div
                 onClick={() => setActiveTag("All")}
-                className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-sm transition-colors ${activeTag === "All" ? 'bg-primary/10 text-primary' : 'hover:bg-muted text-text-muted'}`}
+                className={`flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer text-sm transition-all whitespace-nowrap ${activeTag === "All" ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' : 'hover:bg-muted text-text-muted'}`}
               >
-                <span className="font-medium">All Notes</span>
-                <span className="text-xs">{(notes || []).length}</span>
+                <span className="font-bold">All Notes</span>
+                <span className={`text-[10px] ml-2 ${activeTag === 'All' ? 'opacity-70' : 'opacity-40'}`}>{(notes || []).length}</span>
               </div>
               {tagsList.map((tag) => (
                 <div
                   key={tag}
                   onClick={() => setActiveTag(tag)}
-                  className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-sm transition-colors ${activeTag === tag ? 'bg-primary/10 text-primary' : 'hover:bg-muted text-text-muted'}`}
+                  className={`flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer text-sm transition-all whitespace-nowrap ${activeTag === tag ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' : 'hover:bg-muted text-text-muted'}`}
                 >
                   <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${tag === activeTag ? 'bg-primary' : 'bg-text-muted/30'}`}></div>
-                    <span className="font-medium">{tag}</span>
+                    <span className="font-bold">{tag}</span>
                   </div>
-                  <span className="text-xs">{tagCounts[tag] || 0}</span>
+                  <span className={`text-[10px] ml-2 ${activeTag === tag ? 'opacity-70' : 'opacity-40'}`}>{tagCounts[tag] || 0}</span>
                 </div>
               ))}
             </div>
@@ -79,25 +78,28 @@ export default function NotesPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <h2 className="font-bold text-lg">{activeTag} Notes</h2>
+        <div className="flex-1 flex flex-col gap-6 w-full">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-black text-xl tracking-tight text-text-main">{activeTag} Notes</h2>
+              <Button onClick={handleAddNote} className="sm:hidden gap-2">
+                <Plus className="w-4 h-4" /> Add
+              </Button>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="relative flex-1 sm:w-64">
+            
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="relative flex-1 md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <Input
                   placeholder="Search notes..."
-                  className="pl-9 h-9"
+                  className="pl-9 h-10 md:h-11 bg-surface/50 border-border/40"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <div className="flex items-center border border-border rounded-md bg-surface p-0.5">
-                <button className="p-1.5 bg-muted rounded shadow-sm text-text-main"><Grid className="w-4 h-4" /></button>
-                <button className="p-1.5 text-text-muted hover:text-text-main"><List className="w-4 h-4" /></button>
-              </div>
+              <Button onClick={handleAddNote} className="hidden sm:flex gap-2 h-10 md:h-11 px-6">
+                <Plus className="w-4 h-4" /> Add Note
+              </Button>
             </div>
           </div>
 

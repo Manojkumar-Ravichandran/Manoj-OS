@@ -75,6 +75,13 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

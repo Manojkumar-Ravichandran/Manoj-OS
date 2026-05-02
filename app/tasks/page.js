@@ -124,54 +124,39 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full h-[calc(100vh-120px)] overflow-hidden animate-in fade-in duration-500">
-      <div className="flex h-full gap-6 overflow-hidden">
+    <div className="flex flex-col gap-4 md:gap-6 max-w-[1400px] mx-auto w-full h-[calc(100vh-120px)] overflow-hidden animate-in fade-in duration-500">
+      <div className="flex h-full flex-col lg:flex-row gap-4 md:gap-6 overflow-hidden">
         
-        {/* Left Sidebar: Status & Projects */}
-        <div className="w-64 shrink-0 hidden lg:flex flex-col gap-6">
-          <Card className="flex-1 p-4 bg-surface/50 backdrop-blur-md border-border/40">
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 px-2">Workspace</div>
-            
-            <div className="space-y-1">
-              {['All', 'Todo', 'In Progress', 'Done', 'Backlog'].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setFilter(s)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                    filter === s 
-                      ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
-                      : 'text-text-muted hover:bg-muted'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    {s === 'All' ? <Inbox className="w-4 h-4" /> : 
-                     s === 'Todo' ? <Circle className="w-4 h-4" /> :
-                     s === 'In Progress' ? <Layout className="w-4 h-4" /> :
-                     s === 'Done' ? <CheckCircle className="w-4 h-4" /> :
-                     <Clock className="w-4 h-4" />}
-                    <span>{s}</span>
-                  </div>
-                  <span className="text-[10px] opacity-60">
-                    {s === 'All' ? tasks.length : tasks.filter(t => t.status === s).length}
-                  </span>
-                </button>
-              ))}
-            </div>
+        {/* Workspace Filters - Horizontal on Mobile, Sidebar on Desktop */}
+        <div className="w-full lg:w-64 shrink-0 flex flex-col gap-4">
+          <div className="flex lg:flex-col gap-1 overflow-x-auto no-scrollbar lg:overflow-visible px-1">
+            {['All', 'Todo', 'In Progress', 'Done', 'Backlog'].map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilter(s)}
+                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap lg:w-full ${
+                  filter === s 
+                    ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
+                    : 'text-text-muted hover:bg-muted'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  {s === 'All' ? <Inbox className="w-4 h-4" /> : 
+                   s === 'Todo' ? <Circle className="w-4 h-4" /> :
+                   s === 'In Progress' ? <Layout className="w-4 h-4" /> :
+                   s === 'Done' ? <CheckCircle className="w-4 h-4" /> :
+                   <Clock className="w-4 h-4" />}
+                  <span>{s}</span>
+                </div>
+                <span className={`text-[10px] ml-2 ${filter === s ? 'opacity-80' : 'opacity-40'}`}>
+                  {s === 'All' ? tasks.length : tasks.filter(t => t.status === s).length}
+                </span>
+              </button>
+            ))}
+          </div>
 
-            <div className="mt-8">
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-4 px-2">Projects</div>
-              <div className="space-y-1">
-                {['Finance', 'CRM', 'Work', 'Personal'].map((p) => (
-                  <button key={p} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold text-text-muted hover:bg-muted transition-all">
-                    <Hash className="w-3.5 h-3.5 opacity-40" />
-                    <span>{p}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4 bg-primary/5 border-primary/20">
+          {/* Stats - Hidden on small mobile */}
+          <Card className="hidden lg:block p-4 bg-primary/5 border-primary/20">
             <div className="flex items-center gap-2 text-primary mb-2">
               <BarChart3 className="w-4 h-4" />
               <span className="text-[10px] font-black uppercase tracking-wider">Weekly Stats</span>
@@ -181,7 +166,7 @@ export default function TasksPage() {
                 <div className="h-full bg-primary" style={{ width: `${(tasks.filter(t => t.status === 'Done').length / tasks.length) * 100 || 0}%` }}></div>
               </div>
               <p className="text-[9px] text-text-muted font-bold text-center uppercase tracking-tighter">
-                {tasks.filter(t => t.status === 'Done').length} of {tasks.length} tasks completed
+                {tasks.filter(t => t.status === 'Done').length} of {tasks.length} tasks
               </p>
             </div>
           </Card>
@@ -190,7 +175,7 @@ export default function TasksPage() {
         {/* Main Content: Tasks Feed */}
         <div className="flex-1 flex flex-col gap-4 overflow-hidden">
           {/* Top Bar */}
-          <Card className="p-2 bg-surface/50 backdrop-blur-md border-border/40 shrink-0">
+          <Card className="p-2 bg-surface/50 border-border/40 shrink-0">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
                 <Plus className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
