@@ -156,15 +156,36 @@ export default function VRZStocksTab() {
             <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-success/50"></span>Sup: {contextLow.length}</span>
           </div>
         </Card>
-
         <Card className="p-4 border-l-4 border-l-success/40 bg-surface/50 backdrop-blur-sm shadow-sm">
-          <div className="text-xs font-medium text-text-muted mb-1 uppercase tracking-wider font-semibold">NIFTY 50 INDEX</div>
+          <div className="flex justify-between items-start mb-1">
+            <div className="text-xs font-medium text-text-muted uppercase tracking-wider font-semibold">NIFTY 50 INDEX</div>
+            {data?.index?.pe && (
+              <div className="text-[10px] bg-success/10 text-success px-1.5 py-0.5 rounded font-bold border border-success/20">
+                PE: {data.index.pe}
+              </div>
+            )}
+          </div>
           <div className="text-2xl font-bold text-text-main">{formatNumber(data?.index?.ltp)}</div>
           <div className="flex justify-between text-[10px] text-text-muted mt-1 font-medium">
             <span>H: {formatNumber(data?.index?.dayHigh)}</span>
             <span>L: {formatNumber(data?.index?.dayLow)}</span>
           </div>
         </Card>
+
+        {/* <Card className="p-4 border-l-4 border-l-success/40 bg-surface/50 backdrop-blur-sm shadow-sm">
+          <div className="text-xs font-medium text-text-muted mb-1 uppercase tracking-wider font-semibold">NIFTY 50 INDEX</div>
+          <div className="text-2xl font-bold text-text-main">{formatNumber(data?.index?.ltp)}</div>
+          <div className="flex justify-between text-[10px] text-text-muted mt-1 font-medium">
+            <span>H: {formatNumber(data?.index?.dayHigh)}</span>
+            <span>L: {formatNumber(data?.index?.dayLow)}</span>
+          </div>
+          {data?.index?.pe != null && (
+            <div className="mt-1.5 pt-1.5 border-t border-border/40 flex items-center justify-between text-[10px] font-medium">
+              <span className="text-text-muted">P/E Ratio</span>
+              <span className="font-bold text-text-main">{formatNumber(data.index.pe)}</span>
+            </div>
+          )}
+        </Card> */}
 
         <Card className="p-4 border-l-4 border-l-danger/40 bg-surface/50 backdrop-blur-sm shadow-sm">
           <div className="text-xs font-medium text-text-muted mb-1 flex items-center gap-2 uppercase tracking-wider font-semibold">
