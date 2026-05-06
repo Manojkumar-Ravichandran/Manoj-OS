@@ -4,7 +4,7 @@ import Instrument from "@/lib/models/Instrument";
 import Zone from "@/lib/models/Zone";
 import SystemState from "@/lib/models/SystemState";
 import Signal from "@/lib/models/Signal";
-import { fetchQuote } from "@/lib/services/yahoo";
+import { fetchQuote, fetchNiftyPE } from "@/lib/services/yahoo";
 import { runOnce } from "@/lib/services/scheduler";
 import vrzConfig from "@/lib/vrzConfig";
 import { NIFTY50_SYMBOLS } from "@/lib/data/nifty50";
@@ -14,7 +14,9 @@ const round = (value, decimals = 4) =>
 
 // In-memory cache for VIX and Index to avoid excessive Yahoo calls
 let vixCache = { value: null, lastUpdated: null, fetchedAt: 0 };
-let indexCache = { ltp: null, dayHigh: null, dayLow: null, lastUpdated: null, fetchedAt: 0 };
+let indexCache = { ltp: null, dayHigh: null, dayLow: null, pe: null, lastUpdated: null, fetchedAt: 0 };
+let peCache = { value: null, fetchedAt: 0 };
+const PE_CACHE_TTL = 5 * 60_000; // 5 minutes
 const VIX_CACHE_TTL = 60_000;
 const INDEX_CACHE_TTL = 60_000;
 
@@ -39,7 +41,13 @@ const fetchIndex = async () => {
   }
   try {
     const { ltp, lastUpdated, dayHigh, dayLow } = await fetchQuote(vrzConfig.indexSymbol);
-    indexCache = { ltp, dayHigh, dayLow, lastUpdated, fetchedAt: now };
+    // Only re-fetch PE if its own TTL has expired
+    let pe = peCache.value;
+    if (!pe || now - peCache.fetchedAt > PE_CACHE_TTL) {
+      pe = await fetchNiftyPE();
+      peCache = { value: pe, fetchedAt: now };
+    }
+    indexCache = { ltp, dayHigh, dayLow, pe: pe ?? indexCache.pe, lastUpdated, fetchedAt: now };
   } catch (error) {
     console.error("[vrz] Index fetch failed:", error.message);
   }
@@ -92,6 +100,7 @@ export async function GET() {
         ltp: round(indexQuote?.ltp, 4),
         dayHigh: round(indexQuote?.dayHigh, 4),
         dayLow: round(indexQuote?.dayLow, 4),
+        pe: indexQuote?.pe != null ? round(indexQuote.pe, 2) : null,
         lastUpdated: indexQuote?.lastUpdated || null
       },
       vix: {
