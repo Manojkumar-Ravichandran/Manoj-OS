@@ -16,13 +16,15 @@ import {
   Settings,
   User,
   Sun,
-  Moon
+  Moon,
+  Calendar
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 const mainNav = [
   { name: "Dashboard", path: "/", icon: Home },
+  { name: "Calendar", path: "/calendar", icon: Calendar },
   { name: "Finance", path: "/finance", icon: Wallet },
   { name: "Investments", path: "/investments", icon: TrendingUp },
   { name: "Notes", path: "/notes", icon: FileText },
